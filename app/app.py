@@ -41,6 +41,53 @@ def _load_font(
 
 @app.post("/instagram")
 def instagram():
+    """
+    Generate an Instagram thumbnail image.
+    ---
+    tags:
+      - Image Generation
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        required: true
+        description: Input payload for Instagram thumbnail generation.
+        schema:
+          type: object
+          required:
+            - text
+          properties:
+            background_color:
+              type: string
+              default: white
+              example: "#F5D142"
+            text:
+              type: string
+              example: HELLO
+    responses:
+      200:
+        description: Image generated successfully.
+        schema:
+          type: object
+          properties:
+            image_path:
+              type: string
+              example: generated/instagram_abcd1234.png
+            font_size:
+              type: integer
+              example: 240
+      400:
+        description: Missing or empty text.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: text is required
+    """
     payload = request.get_json(silent=True) or {}
     background_color = payload.get("background_color", "white")
     text = str(payload.get("text", "")).strip()
@@ -78,6 +125,26 @@ def instagram():
 
 @app.post("/captcha")
 def captcha():
+    """
+    Generate a CAPTCHA image.
+    ---
+    tags:
+      - Image Generation
+    produces:
+      - application/json
+    responses:
+      200:
+        description: CAPTCHA image generated successfully.
+        schema:
+          type: object
+          properties:
+            image_path:
+              type: string
+              example: generated/captcha_abcd1234.png
+            font_size:
+              type: integer
+              example: 128
+    """
     width, height = 200, 100
     captcha_text = "".join(
         random.choices(string.ascii_uppercase + string.digits, k=5)
@@ -106,6 +173,58 @@ def captcha():
 
 @app.post("/bizcard")
 def bizcard():
+    """
+    Generate a business card image.
+    ---
+    tags:
+      - Image Generation
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        required: true
+        description: Input payload for business card generation.
+        schema:
+          type: object
+          required:
+            - name
+            - phone
+            - email
+          properties:
+            background_color:
+              type: string
+              default: white
+              example: "#E8F0FE"
+            name:
+              type: string
+              example: MOJAN KIM
+            phone:
+              type: string
+              example: 010-1234-5678
+            email:
+              type: string
+              example: mojan@example.com
+    responses:
+      200:
+        description: Business card image generated successfully.
+        schema:
+          type: object
+          properties:
+            image_path:
+              type: string
+              example: generated/bizcard_abcd1234.png
+      400:
+        description: Missing one or more required fields.
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: name, phone, email are required
+    """
     payload = request.get_json(silent=True) or {}
     background_color = payload.get("background_color", "white")
     name = str(payload.get("name", "")).strip()
